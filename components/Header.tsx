@@ -1,10 +1,5 @@
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
-
-// Lazy load AdSense to prevent blocking header render
-const AdSense = dynamic(() => import('./AdSense'), {
-  ssr: false,
-})
+import AdSenseWrapper from './AdSenseWrapper'
 
 /**
  * Header - Server Component
@@ -127,7 +122,7 @@ export default function Header() {
       {/* AdSense Banner - Below header */}
       <div className="bg-gray-100 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-          <AdSense
+          <AdSenseWrapper
             adSlot="5555555555"
             adFormat="horizontal"
             containerClassName="ad-container-wide"

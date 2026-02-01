@@ -3,17 +3,7 @@ import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Sidebar from '@/components/Sidebar'
-import dynamic from 'next/dynamic'
-
-// Lazy load AdSense to prevent blocking initial render
-const AdSense = dynamic(() => import('@/components/AdSense'), {
-  ssr: false,
-  loading: () => (
-    <div className="ad-container-wide bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center">
-      <div className="text-gray-400 text-xs">Loading ad...</div>
-    </div>
-  ),
-})
+import AdSenseWrapper from '@/components/AdSenseWrapper'
 
 /**
  * Home Page - Server Component
@@ -115,7 +105,7 @@ export default function Home() {
 
               {/* AdSense Rectangle - Lazy loaded after content */}
               <div className="flex justify-center" style={{ minHeight: '250px' }}>
-                <AdSense
+                <AdSenseWrapper
                   adSlot="2222222222"
                   adFormat="rectangle"
                   containerClassName="ad-container"

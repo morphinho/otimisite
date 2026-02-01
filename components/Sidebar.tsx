@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import AdSense from './AdSense'
+import AdSenseWrapper from './AdSenseWrapper'
 
 /**
  * Sidebar - Server Component
@@ -68,7 +68,7 @@ export default function Sidebar() {
 
         {/* AdSense - 300x250 rectangle */}
         <div className="pt-4">
-          <AdSense
+          <AdSenseWrapper
             adSlot="1234567890"
             adFormat="rectangle"
             containerClassName="ad-container"
@@ -77,7 +77,7 @@ export default function Sidebar() {
 
         {/* AdSense - Second ad unit */}
         <div className="pt-6">
-          <AdSense
+          <AdSenseWrapper
             adSlot="4444444444"
             adFormat="rectangle"
             containerClassName="ad-container"

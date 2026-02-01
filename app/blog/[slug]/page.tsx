@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Sidebar from '@/components/Sidebar'
-import AdSense from '@/components/AdSense'
+import AdSenseWrapper from '@/components/AdSenseWrapper'
 
 /**
  * Blog Post Page - Server Component
@@ -993,7 +993,7 @@ export default function BlogPostPage({
 
               {/* AdSense - In-article ad, mid-content */}
               <div className="my-12">
-                <AdSense
+                <AdSenseWrapper
                   adSlot="1111111111"
                   adFormat="rectangle"
                   style="in-article"
@@ -1003,7 +1003,7 @@ export default function BlogPostPage({
 
               {/* AdSense Banner - Bottom of article */}
               <div className="my-12 w-full">
-                <AdSense
+                <AdSenseWrapper
                   adSlot="3333333333"
                   adFormat="horizontal"
                   containerClassName="ad-container-wide"
