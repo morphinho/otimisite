@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* System font stack - no external loading, instant render */
+@layer base {
+  html {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-display: swap;
+  }
+  
+  body {
+    @apply antialiased bg-white;
+  }
+}
+
+/* Adsinstyle color scheme */
+@layer base {
+  :root {
+    --color-primary-dark: #1a237e;
+    --color-primary-darker: #0d47a1;
+    --color-gray-dark: #424242;
+    --color-gray-light: #f5f5f5;
+  }
+}
+
+/* Prevent layout shift - reserve space for ads */
+@layer utilities {
+  .ad-container {
+    /* Aspect ratio prevents CLS - adjust based on ad unit size */
+    aspect-ratio: 300 / 250; /* Standard 300x250 */
+    min-height: 250px;
+    width: 100%;
+  }
+  
+  .ad-container-wide {
+    aspect-ratio: 728 / 90; /* Standard 728x90 */
+    min-height: 90px;
+    width: 100%;
+  }
+  
+  .ad-container-square {
+    aspect-ratio: 1 / 1; /* Square ads */
+    min-height: 250px;
+    width: 100%;
+  }
+}
+
+/* Content typography - optimized for readability */
+@layer components {
+  .prose-content {
+    @apply max-w-3xl mx-auto px-4;
+  }
+  
+  .prose-content h1 {
+    @apply text-4xl font-bold mt-8 mb-4 leading-tight;
+  }
+  
+  .prose-content h2 {
+    @apply text-3xl font-bold mt-8 mb-4 leading-tight;
+  }
+  
+  .prose-content h3 {
+    @apply text-2xl font-semibold mt-6 mb-3 leading-tight;
+  }
+  
+  .prose-content p {
+    @apply text-lg leading-relaxed mb-4;
+  }
+  
+  .prose-content ul,
+  .prose-content ol {
+    @apply mb-4 pl-6;
+  }
+  
+  .prose-content li {
+    @apply mb-2;
+  }
+  
+  .prose-content a {
+    @apply text-blue-900 underline;
+  }
+  
+  .prose-content img {
+    @apply my-8 rounded-lg;
+  }
+  
+  .prose-content blockquote {
+    @apply border-l-4 border-gray-300 pl-4 italic my-6;
+  }
+}
+
