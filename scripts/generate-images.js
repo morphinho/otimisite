@@ -172,10 +172,37 @@ function downloadImage(url, filepath) {
   });
 }
 
-// Main function
-async function generateImages() {
+// Generate single image
+async function generateSingleImage(config) {
+  try {
+    // Create task
+    const taskId = await createTask(config);
+    
+    // Wait for completion
+    const imageUrl = await waitForCompletion(taskId);
+    
+    // Download image
+    const imagesDir = path.join(process.cwd(), 'public', 'images');
+    if (!fs.existsSync(imagesDir)) {
+      fs.mkdirSync(imagesDir, { recursive: true });
+    }
+    const filepath = path.join(imagesDir, config.filename);
+    console.log(`   📥 Downloading to: ${config.filename}`);
+    await downloadImage(imageUrl, filepath);
+    console.log(`   ✅ Saved: ${config.filename}`);
+    
+    return { success: true, filename: config.filename };
+  } catch (error) {
+    console.error(`   ❌ Error generating ${config.filename}:`, error.message);
+    return { success: false, filename: config.filename, error: error.message };
+  }
+}
+
+// Main function - generates all images in parallel
+async function generateImages(configs = imageConfigs) {
   console.log('🚀 Starting image generation...\n');
   console.log(`📁 Images will be saved to: public/images/\n`);
+  console.log(`⚡ Generating ${configs.length} images in parallel...\n`);
 
   // Ensure directory exists
   const imagesDir = path.join(process.cwd(), 'public', 'images');
@@ -183,30 +210,21 @@ async function generateImages() {
     fs.mkdirSync(imagesDir, { recursive: true });
   }
 
-  for (const config of imageConfigs) {
-    try {
-      // Create task
-      const taskId = await createTask(config);
-      
-      // Wait for completion
-      const imageUrl = await waitForCompletion(taskId);
-      
-      // Download image
-      const filepath = path.join(imagesDir, config.filename);
-      console.log(`   📥 Downloading to: ${config.filename}`);
-      await downloadImage(imageUrl, filepath);
-      console.log(`   ✅ Saved: ${config.filename}\n`);
-      
-      // Small delay between requests
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-    } catch (error) {
-      console.error(`   ❌ Error generating ${config.filename}:`, error.message);
-      console.log(`   Continuing with next image...\n`);
-    }
-  }
-
-  console.log('✨ Image generation complete!');
+  // Create all tasks in parallel
+  const taskPromises = configs.map(config => generateSingleImage(config));
+  
+  // Wait for all images to complete
+  const results = await Promise.allSettled(taskPromises);
+  
+  // Report results
+  const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+  const failed = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)).length;
+  
+  console.log(`\n✨ Image generation complete!`);
+  console.log(`   ✅ Successful: ${successful}`);
+  console.log(`   ❌ Failed: ${failed}`);
+  
+  return results;
 }
 
 // Run if executed directly
