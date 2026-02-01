@@ -3,7 +3,17 @@ import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Sidebar from '@/components/Sidebar'
-import AdSense from '@/components/AdSense'
+import dynamic from 'next/dynamic'
+
+// Lazy load AdSense to prevent blocking initial render
+const AdSense = dynamic(() => import('@/components/AdSense'), {
+  ssr: false,
+  loading: () => (
+    <div className="ad-container-wide bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center">
+      <div className="text-gray-400 text-xs">Loading ad...</div>
+    </div>
+  ),
+})
 
 /**
  * Blog Listing Page - Server Component
@@ -78,15 +88,6 @@ export default function BlogPage() {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Main Content - Posts List */}
             <div className="flex-1 space-y-6">
-              {/* AdSense Banner - Top of content */}
-              <div className="w-full">
-                <AdSense
-                  adSlot="1111111111"
-                  adFormat="horizontal"
-                  containerClassName="ad-container-wide"
-                />
-              </div>
-
               {blogPosts.map((post, index) => {
                 const publishedDate = new Date(post.date)
                 return (
@@ -148,8 +149,8 @@ export default function BlogPage() {
                 )
               })}
 
-              {/* AdSense Rectangle - After posts */}
-              <div className="flex justify-center my-8">
+              {/* AdSense Rectangle - Lazy loaded after content */}
+              <div className="flex justify-center my-8" style={{ minHeight: '250px' }}>
                 <AdSense
                   adSlot="2222222222"
                   adFormat="rectangle"

@@ -24,6 +24,21 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@/components'],
   },
+  
+  // Headers for resource hints (preconnect/dns-prefetch)
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Link',
+            value: '<https://pagead2.googlesyndication.com>; rel=preconnect; crossorigin, <https://pagead2.googlesyndication.com>; rel=dns-prefetch',
+          },
+        ],
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig

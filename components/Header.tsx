@@ -1,5 +1,10 @@
 import Link from 'next/link'
-import AdSense from './AdSense'
+import dynamic from 'next/dynamic'
+
+// Lazy load AdSense to prevent blocking header render
+const AdSense = dynamic(() => import('./AdSense'), {
+  ssr: false,
+})
 
 /**
  * Header - Server Component

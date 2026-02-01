@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 /**
  * AdSense Component - Client Component ONLY because AdSense requires client-side script injection
@@ -28,28 +28,40 @@ export default function AdSense({
   containerClassName = 'ad-container',
 }: AdSenseProps) {
   const [showPlaceholder, setShowPlaceholder] = useState(true)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     // Only run on client side
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || !containerRef.current) return
 
-    // Defer AdSense script loading until after main content
-    // This ensures main content loads first (better LCP)
-    const loadAdSense = () => {
-      if (!window.adsbygoogle) {
-        const script = document.createElement('script')
-        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX'
-        script.async = true
-        script.crossOrigin = 'anonymous'
-        document.head.appendChild(script)
-      }
-    }
+    // Use Intersection Observer to load ads only when visible
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Load AdSense script only when ad container is visible
+            const loadAdSense = () => {
+              if (!window.adsbygoogle) {
+                const script = document.createElement('script')
+                script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX'
+                script.async = true
+                script.crossOrigin = 'anonymous'
+                document.head.appendChild(script)
+              }
+            }
 
-    // Load after a delay to ensure main content renders first
-    // This improves LCP score
-    const timer = setTimeout(loadAdSense, 100)
+            // Delay loading to ensure main content renders first
+            setTimeout(loadAdSense, 2000)
+            observer.disconnect()
+          }
+        })
+      },
+      { rootMargin: '50px' } // Start loading 50px before visible
+    )
 
-    return () => clearTimeout(timer)
+    observer.observe(containerRef.current)
+
+    return () => observer.disconnect()
   }, [])
 
   useEffect(() => {
@@ -86,7 +98,7 @@ export default function AdSense({
   }
 
   return (
-    <div className={`${containerClassName} ${className} relative`}>
+    <div ref={containerRef} className={`${containerClassName} ${className} relative`}>
       {/* Placeholder prevents CLS - exact dimensions match ad unit */}
       <ins
         className="adsbygoogle"
@@ -95,6 +107,7 @@ export default function AdSense({
         data-ad-slot={adSlot}
         data-ad-format={adFormat}
         data-full-width-responsive="true"
+        data-loading="lazy"
       />
       
       {/* Visual Placeholder Overlay - Shows until ad loads */}

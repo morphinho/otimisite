@@ -3,7 +3,17 @@ import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Sidebar from '@/components/Sidebar'
-import AdSense from '@/components/AdSense'
+import dynamic from 'next/dynamic'
+
+// Lazy load AdSense to prevent blocking initial render
+const AdSense = dynamic(() => import('@/components/AdSense'), {
+  ssr: false,
+  loading: () => (
+    <div className="ad-container-wide bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center">
+      <div className="text-gray-400 text-xs">Loading ad...</div>
+    </div>
+  ),
+})
 
 /**
  * Home Page - Server Component
@@ -40,21 +50,15 @@ export default function Home() {
 
   return (
     <>
+      {/* Preload critical resources */}
+      <link rel="preload" as="image" href={firstPostImage} fetchPriority="high" />
+      
       <Header />
       <main className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Main Content - Featured Posts */}
             <div className="flex-1 space-y-6">
-              {/* AdSense Banner - Top of content */}
-              <div className="w-full">
-                <AdSense
-                  adSlot="1111111111"
-                  adFormat="horizontal"
-                  containerClassName="ad-container-wide"
-                />
-              </div>
-
               {featuredPosts.map((post, index) => {
                 const publishedDate = new Date(post.date)
                 return (
@@ -70,6 +74,8 @@ export default function Home() {
                             sizes="(max-width: 768px) 192px, 256px"
                             priority={index === 0}
                             loading={index === 0 ? 'eager' : 'lazy'}
+                            fetchPriority={index === 0 ? 'high' : 'auto'}
+                            quality={index === 0 ? 90 : 75}
                           />
                         </div>
                       </div>
@@ -110,8 +116,8 @@ export default function Home() {
                 )
               })}
 
-              {/* AdSense Rectangle - Between posts */}
-              <div className="flex justify-center">
+              {/* AdSense Rectangle - Lazy loaded after content */}
+              <div className="flex justify-center" style={{ minHeight: '250px' }}>
                 <AdSense
                   adSlot="2222222222"
                   adFormat="rectangle"
