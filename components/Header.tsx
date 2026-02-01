@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import AdSenseWrapper from './AdSenseWrapper'
+import HeaderAds from './HeaderAds'
 
 /**
  * Header - Server Component
@@ -120,15 +120,7 @@ export default function Header() {
       </div>
 
       {/* AdSense Banner - Below header */}
-      <div className="bg-gray-100 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-          <AdSenseWrapper
-            adSlot="5555555555"
-            adFormat="horizontal"
-            containerClassName="ad-container-wide"
-          />
-        </div>
-      </div>
+      <HeaderAds />
     </header>
   )
 }

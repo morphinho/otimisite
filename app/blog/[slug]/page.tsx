@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Sidebar from '@/components/Sidebar'
-import AdSenseWrapper from '@/components/AdSenseWrapper'
+import ArticleAds from '@/components/ArticleAds'
 
 /**
  * Blog Post Page - Server Component
@@ -991,24 +991,8 @@ export default function BlogPostPage({
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
 
-              {/* AdSense - In-article ad, mid-content */}
-              <div className="my-12">
-                <AdSenseWrapper
-                  adSlot="1111111111"
-                  adFormat="rectangle"
-                  style="in-article"
-                  containerClassName="ad-container"
-                />
-              </div>
-
-              {/* AdSense Banner - Bottom of article */}
-              <div className="my-12 w-full">
-                <AdSenseWrapper
-                  adSlot="3333333333"
-                  adFormat="horizontal"
-                  containerClassName="ad-container-wide"
-                />
-              </div>
+              {/* Article Ads - Client Component */}
+              <ArticleAds />
             </article>
 
             {/* Sidebar */}

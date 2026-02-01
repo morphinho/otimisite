@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Sidebar from '@/components/Sidebar'
-import AdSenseWrapper from '@/components/AdSenseWrapper'
+import PageAds from '@/components/PageAds'
 
 /**
  * Home Page - Server Component
@@ -103,14 +103,8 @@ export default function Home() {
                 )
               })}
 
-              {/* AdSense Rectangle - Lazy loaded after content */}
-              <div className="flex justify-center" style={{ minHeight: '250px' }}>
-                <AdSenseWrapper
-                  adSlot="2222222222"
-                  adFormat="rectangle"
-                  containerClassName="ad-container"
-                />
-              </div>
+              {/* Page Ads - Client Component */}
+              <PageAds />
             </div>
 
             {/* Sidebar */}
