@@ -9,6 +9,18 @@
     "lint": "next lint",
     "generate-images": "node scripts/generate-images.js"
   },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "dependencies": {
     "next": "^14.2.18",
     "react": "^18.3.1",
